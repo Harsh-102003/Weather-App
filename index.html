@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Whether App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="search">
+        <input type="text" placeholder="Enter city name" spellcheck="false" />
+        <button id="search-btn">
+          <img src="images/search.png" alt="search btn icon" />
+        </button>
+      </div>
+
+      <div class="error">
+        <p>Invalid City Name</p>
+      </div>
+
+      <div class="whether">
+        <img
+          src="/Whether site/images/snow.png"
+          alt="Snow"
+          class="whether-icon"
+        />
+        <h3 class="rslt">Snow</h3>
+        <h1 class="temp">26°C</h1>
+        <h2 class="city">Himachal Pradesh</h2>
+        <div class="details">
+          <div class="col">
+            <img src="/Whether site/images/humidity.png" />
+            <div>
+              <p class="humidity">50%</p>
+              <p>Humidity</p>
+            </div>
+          </div>
+
+          <div class="col">
+            <img src="/Whether site/images/wind.png" />
+            <div>
+              <p class="wind">15 km/h</p>
+              <p>Wind Speed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const apiKey = "9d2eaccf818e3dc449d97c2dce019409";
+      const apiUrl =
+        "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+      const searchBox = document.querySelector(".search input");
+      const searchBtn = document.querySelector(".search button");
+      const whetherIcon = document.querySelector(".whether-icon");
+      const whetherReslut = document.querySelector(".rslt");
+      const Whether = document.querySelector(".whether");
+
+      async function checkWhether(city) {
+        const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+        if (response.status == 404) {
+          document.querySelector(".error").style.display = "block";
+          Whether.style.display = "none";
+        } else {
+          var data = await response.json();
+          console.log(data);
+
+          document.querySelector(".city").innerHTML = data.name;
+          document.querySelector(".temp").innerHTML =
+            Math.round(data.main.temp) + " °C";
+          document.querySelector(".humidity").innerHTML =
+            data.main.humidity + "%";
+          document.querySelector(".wind").innerHTML = data.wind.speed + " Km/h";
+          if (data.weather[0].main == "Clouds") {
+            whetherIcon.src = "/Whether site/images/clouds.png";
+            whetherReslut.innerText = "Cloudy";
+          } else if (data.weather[0].main == "Clear") {
+            whetherIcon.src = "/Whether site/images/clear.png";
+            whetherReslut.innerText = "Clear";
+          } else if (data.weather[0].main == "Rain") {
+            whetherIcon.src = "/Whether site/images/rain.png";
+            whetherReslut.innerText = "Rain";
+          } else if (data.weather[0].main == "Drizzle") {
+            whetherIcon.src = "/Whether site/images/drizzle.png";
+            whetherReslut.innerText = "Drizzle";
+          } else if (data.weather[0].main == "Mist") {
+            whetherIcon.src = "/Whether site/images/mist.png";
+            whetherReslut.innerText = "Mist";
+          }
+
+          Whether.style.display = "block";
+          document.querySelector(".error").style.display = "none";
+        }
+      }
+
+      searchBtn.addEventListener("click", () => {
+        checkWhether(searchBox.value);
+      });
+    </script>
+  </body>
+</html>
